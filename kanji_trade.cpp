@@ -24,13 +24,26 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 {
 	//char keta_moji[][ 6 ] = {"十","百","千"};
 	std::string keta_4_moji[] = {"","万","億","兆","京","垓"};
-	std::string keta_moji[] = {"十","百","千"};
+    std::string keta_moji[] = {"十","百","千"};
+	//std::string keta_moji[] = {"","十","百","千","万","十","百","千","億","十","百","千","兆","十","百","千","京","十","百","千","垓","十","百","千"};
 	std::string kanji_num[] = {"一","二","三","四","五","六","七","八","九",""};
+	std::string target_moji[] = {"一","二","三","四","五","六","七","八","九","十","百","千","万","億","兆","京","垓"};
 	
-	moji = moji + "・・・・加工前";
-	printf("kansu_before -> %s\n", moji.c_str());
+	//moji = keta_4_moji[1] + keta_moji[1]; //"・・・・加工前"; //連結方法
+	//printf("kansu_before -> %s\n", moji.c_str());
 // ループ　置換内容の追加から
-	moji = all_Replace(moji, keta_moji[1], "ABC" + std::to_string(((10 % 4) + (int)(9 / 10)) * (int)pow(3,2)));
+//printf("array = %lu\n",sizeof(target_moji) / sizeof(target_moji[0]));
+
+    // 文字列の右側にdigit_0_assistを付ける
+	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
+		moji = all_Replace(moji, target_moji[i], target_moji[i] + "digit_" + std::to_string(0) + "_assist");
+	}
+    // 文字列の左側のdigit_0_assistを消す
+	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
+		moji = all_Replace(moji, "digit_" + std::to_string(0) + "_assist" + target_moji[i], target_moji[i]);
+	}
+
+	//moji = all_Replace(moji, keta_moji[1], "ABC" + std::to_string(((10 % 4) + (int)(9 / 10)) * (int)pow(3,2)));
 
 	std::cout << "kansu_after -> " + moji + keta_moji[2] + "後" << std::endl;
 	// ketamojinosyori
