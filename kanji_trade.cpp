@@ -4,7 +4,7 @@
 #include <string> // C++　文字列
 #include <iostream> // 表示
 #include <vector> // 配列
-
+// 文字列中の漢数字をその最大値まで算用数字に変換可能。ゼロなし、千万、数字なしの問題を解決
 std::string kanji_num_trade(std::string moji); //説明は、下記sample参照　ポインタで返す予定
 std::string all_Replace(std::string std, std::string target_std, std::string change_std); //すべて置換
 
@@ -34,11 +34,11 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 // ループ　置換内容の追加から
 //printf("array = %lu\n",sizeof(target_moji) / sizeof(target_moji[0]));
 
-    // 文字列の右側にdigit_0_assistを付ける
+    // 文字列の右側に「digit_0_assist」を付ける
 	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
 		moji = all_Replace(moji, target_moji[i], target_moji[i] + "digit_" + std::to_string(0) + "_assist");
 	}
-    // 文字列の左側のdigit_0_assistを消す
+    // 文字列の左側の「digit_0_assist」を消す
 	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
 		moji = all_Replace(moji, "digit_" + std::to_string(0) + "_assist" + target_moji[i], target_moji[i]);
 	}
@@ -49,6 +49,9 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 	// ketamojinosyori
 	
 	return moji + "後";
+
+
+	//gggggg
 }
 
 std::string all_Replace(std::string std1, std::string target_std, std::string change_std)
