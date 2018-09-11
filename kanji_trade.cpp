@@ -44,14 +44,18 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 	}
 
 	//moji = all_Replace(moji, keta_moji[1], "ABC" + std::to_string(((10 % 4) + (int)(9 / 10)) * (int)pow(3,2)));
+	for (int i = 0; i < (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - 1); i++) {
+		for (int j = i; j >= 0; j--) {
+			for (int k = 0; k < (sizeof(kanji_num) / sizeof(kanji_num[0]) - 1); k++) {
 
+			}
+		}
+
+	}
 	std::cout << "kansu_after -> " + moji + keta_moji[2] + "後" << std::endl;
 	// ketamojinosyori
 	
 	return moji + "後";
-
-
-	//gggggg
 }
 
 std::string all_Replace(std::string std1, std::string target_std, std::string change_std)
