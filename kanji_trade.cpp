@@ -55,6 +55,7 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 			}
 		}
 //
+
 	}
 	std::cout << "kansu_after -> " + moji + keta_moji[2] + "後" << std::endl;
 	// ketamojinosyori
