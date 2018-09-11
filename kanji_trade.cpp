@@ -47,7 +47,11 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 	for (int i = 0; i < (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - 1); i++) {
 		for (int j = i; j >= 0; j--) {
 			for (int k = 0; k < (sizeof(kanji_num) / sizeof(kanji_num[0]) - 1); k++) {
-
+				if ((i % 4) == 0) {
+					moji = all_Replace(moji, , );
+				} else {
+					moji = all_Replace(moji, , );
+				}	
 			}
 		}
 
