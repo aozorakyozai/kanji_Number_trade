@@ -4,7 +4,8 @@
 #include <string> // C++　文字列
 #include <iostream> // 表示
 #include <vector> // 配列
-// 文字列中の漢数字をその最大値まで算用数字に変換可能。ゼロなし、千万、数字なしの問題を解決
+
+// 文字列中の漢数字をその最大値まで算用数字に変換可能。ゼロがないこと、千と万の処理、桁の前に数字がないの問題をクリア
 std::string kanji_num_trade(std::string moji); //説明は、下記sample参照　ポインタで返す予定
 std::string all_Replace(std::string std, std::string target_std, std::string change_std); //すべて置換
 
@@ -25,14 +26,9 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 	//char keta_moji[][ 6 ] = {"十","百","千"};
 	std::string keta_4_moji[] = {"","万","億","兆","京","垓"};
     std::string keta_moji[] = {"十","百","千"};
-	//std::string keta_moji[] = {"","十","百","千","万","十","百","千","億","十","百","千","兆","十","百","千","京","十","百","千","垓","十","百","千"};
 	std::string kanji_num[] = {"一","二","三","四","五","六","七","八","九",""};
+
 	std::string target_moji[] = {"一","二","三","四","五","六","七","八","九","十","百","千","万","億","兆","京","垓"};
-	
-	//moji = keta_4_moji[1] + keta_moji[1]; //"・・・・加工前"; //連結方法
-	//printf("kansu_before -> %s\n", moji.c_str());
-// ループ　置換内容の追加から
-//printf("array = %lu\n",sizeof(target_moji) / sizeof(target_moji[0]));
 
     // 文字列の右側に「digit_0_assist」を付ける
 	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
@@ -43,27 +39,24 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 		moji = all_Replace(moji, "digit_" + std::to_string(0) + "_assist" + target_moji[i], target_moji[i]);
 	}
 
-	//moji = all_Replace(moji, keta_moji[1], "ABC" + std::to_string(((10 % 4) + (int)(9 / 10)) * (int)pow(3,2)));
-	for (int i = 0; i < (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - 1); i++) {
+	for (int i = 0; i < ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) ) * 4 + 3); i++) {
 		for (int j = i; j >= 0; j--) {
-			for (int k = 0; k < (sizeof(kanji_num) / sizeof(kanji_num[0]) - 1); k++) {
+			for (int k = 0; k < (sizeof(kanji_num) / sizeof(kanji_num[0])); k++) {
+				std::string before_trade;
+				std::string after_trade;
 				if ((i % 4) == 0) {
-
-// ０の追加から
-
-					moji = all_Replace(moji, kanji_num[k] + keta_4_moji[i / 4] + "digit_" + std::to_string(j) + "_assist", "digit_" + std::to_string(i + 1) + "_assist" );
+					before_trade = kanji_num[k] + keta_4_moji[i / 4] + "digit_" + std::to_string(j) + "_assist";
+					after_trade = "digit_" + std::to_string(i + 1) + "_assist" + std::to_string((k + 1) % 10) + std::string(i - j, '0');
 				} else {
-					moji = all_Replace(moji, kanji_num[k] + keta_moji[(i % 4) - 1] + "digit_" + std::to_string(j) + "_assist", "digit_" + std::to_string(i + 1) + "_assist" );
+					before_trade = kanji_num[k] + keta_moji[(i % 4) - 1] + "digit_" + std::to_string(j) + "_assist";
+					after_trade = "digit_" + std::to_string(i + 1) + "_assist" + std::to_string((int)((k + 1) / 10) + ((k + 1) % 10)) + std::string(i - j, '0');
 				}	
+				moji = all_Replace(moji, before_trade, after_trade);
 			}
 		}
-//
-
 	}
-	std::cout << "kansu_after -> " + moji + keta_moji[2] + "後" << std::endl;
-	// ketamojinosyori
 	
-	return moji + "後";
+	return moji;
 }
 
 std::string all_Replace(std::string std1, std::string target_std, std::string change_std)
