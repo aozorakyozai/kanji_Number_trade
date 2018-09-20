@@ -11,13 +11,13 @@ int main() {
 	//printf("漢数字を入力してください。\n");
 	//std::scanf("%s", &sample);
 
-	std::string sample = "たとえば、「百垓百一京百十二兆二百億二百一万二百二十二」の中の「百」は六通りの置換をする";//入力
+	std::string sample = "Ex．「百垓百一京百十二兆二百億二百一万二百二十二」の中の「百」は六通りの置換がある。";//入力
 	
 	printf("main_before -> %s\n", sample.c_str());
 
 	std::string num_moji = kanji_num_trade(sample); // 置換
 
-	printf("main_after -> %s\n", num_moji.c_str()); //出力　.c_str()は先頭アドレス
+	printf("main_after -> %s\n", num_moji.c_str()); //出力
 
 	return 0;
 }    
@@ -29,8 +29,9 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 	#define KETA_0 1 //[keta_4_moji]の要素番号の最大値を取得するため
 
 	std::string keta_4_moji[] = {"","万","億","兆","京","垓"};
-    std::string keta_moji[] = {"十","百","千"};
+	std::string keta_moji[] = {"十","百","千"};
 	std::string kanji_num[] = {"一","二","三","四","五","六","七","八","九",""};
+    
 	// 配列結合関数を作成する
 	std::string target_moji[] = {"一","二","三","四","五","六","七","八","九","十","百","千","万","億","兆","京","垓"};
 
@@ -38,6 +39,7 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - KETA_0); i++) {
 		moji = all_Replace(moji, target_moji[i], target_moji[i] + "digit_" + std::to_string(0) + "_assist");
 	}
+
     // 文字列の左側の「digit_0_assist」を消す
 	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
 		moji = all_Replace(moji, "digit_" + std::to_string(0) + "_assist" + target_moji[i], target_moji[i]);
@@ -51,17 +53,18 @@ std::string kanji_num_trade(std::string moji) //cでも作る予定
 				std::string after_trade;
 
 				if ((i % KETA_4) == 0) {
-					before_trade = kanji_num[k] + keta_4_moji[i / KETA_4] + "digit_" + std::to_string(j) + "_assist";
-					after_trade = "digit_" + std::to_string(i + 1) + "_assist" + std::to_string((k + 1) % 10) + std::string(i - j, '0');
+					before_trade = kanji_num[k] + keta_4_moji[i / KETA_4] + ("digit_" + std::to_string(j) + "_assist");
+					after_trade = ("digit_" + std::to_string(i + 1) + "_assist") + std::to_string((k + 1) % 10) + std::string(i - j, '0');
 				} else {
-					before_trade = kanji_num[k] + keta_moji[(i % KETA_4) - 1] + "digit_" + std::to_string(j) + "_assist";
-					after_trade = "digit_" + std::to_string(i + 1) + "_assist" + std::to_string((int)((k + 1) / 10) + ((k + 1) % 10)) + std::string(i - j, '0');
+					before_trade = kanji_num[k] + keta_moji[(i % KETA_4) - 1] + ("digit_" + std::to_string(j) + "_assist");
+					after_trade = ("digit_" + std::to_string(i + 1) + "_assist") + std::to_string((int)((k + 1) / 10) + ((k + 1) % 10)) + std::string(i - j, '0');
 				}	
-
 				moji = all_Replace(moji, before_trade, after_trade);
 			}
 		}
 	}
+// 文字列の種類別の処理
+// 例外処理
 // 後処理
 
 
