@@ -3,15 +3,12 @@
 #include <string> // 文字列
 #include <iostream> // 表示
 
-std::string kanji_num_trade(std::string); // 漢数字を算用数字に置換
-std::string all_Replace(std::string, std::string, std::string); // すべて置換（sample参照）
+std::string kanji_num_trade(std::string); // 漢数字を算用数字に置換　（sample参照）
+std::string all_Replace(std::string, std::string, std::string); // すべて置換
 std::string legal_doc(std::string); // 用途別　法律文書用
 std::string irregular(std::string); // 例外処理
 
 int main() {
-	//std::string sample;
-	//printf("漢数字を入力してください。\n");
-	//std::scanf("%s", &sample);
 
 	std::string sample =  //入力
     "変換範囲は、「一」から「九千九百九十九垓九千九百九十九京九千九百九十九兆九千九百九十九億九千九百九十九万九千九百九十九」です。"
