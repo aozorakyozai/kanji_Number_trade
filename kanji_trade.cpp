@@ -105,7 +105,7 @@ std::string kanji_num_trade(std::string moji) // 置換
     }
 
     //  アシスト文字を消去する
-    for (int i = 0; i < ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - KETA_0 ) * KETA_4 + keta_moji_ARRAY_SIZE) + 1; i++) {
+    for (int i = 0; i < ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - KETA_0 ) * KETA_4 + keta_moji_ARRAY_SIZE); i++) {
         moji = all_Replace(moji,  ("digit_" + std::to_string(i + 1) + "_assist") , "");
     }
 
@@ -162,4 +162,3 @@ std::string irregular(std::string std3) //例外処理  (漢字でなければ�
 
     return std3;
 }
-
