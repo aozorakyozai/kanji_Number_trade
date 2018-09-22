@@ -29,10 +29,11 @@ int main() {
 
 std::string kanji_num_trade(std::string moji) // 置換
 {
-	#define keta_moji_ARRAY_SIZE 4 // {"十","百","千"}の3ケタ+1を追加する
+	#define keta_moji_ARRAY_SIZE 3 // {"十","百","千"}の3ケタを追加する
 	#define KETA_4 4 // 4ケタごとに出現する[keta_4_moji]から総桁数を求める
 	#define KETA_0 1 // [keta_4_moji]の要素番号の最大値を取得するため
     #define nine_trade 2 // kanji_num 文字列中の九まで置換
+    #define last_assist 1 // 最後のアシスト文字のナンバーは最大値より１つ大きいから
 
 	std::string keta_4_moji[] = {"","万","億","兆","京","垓"};
 	std::string keta_moji[] = {"十","百","千"};
@@ -42,16 +43,16 @@ std::string kanji_num_trade(std::string moji) // 置換
 	std::string target_moji[] = {"一","二","三","四","五","六","七","八","九","十","百","千","万","億","兆","京","垓"};
 
     // 文字列の右側に「digit_0_assist」を付ける
-	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - KETA_0); i++) {
+	for (int i = 0; i < (sizeof(target_moji) / sizeof(target_moji[0])); i++) {
 		moji = all_Replace(moji, target_moji[i], target_moji[i] + "digit_" + std::to_string(0) + "_assist");
 	}
 
     // 文字列の左側の「digit_0_assist」を消す
-	for (int i = 0; i <= (sizeof(target_moji) / sizeof(target_moji[0]) - 1); i++) {
+	for (int i = 0; i < (sizeof(target_moji) / sizeof(target_moji[0])); i++) {
 		moji = all_Replace(moji, "digit_" + std::to_string(0) + "_assist" + target_moji[i], target_moji[i]);
 	}
 
-	for (int i = 0; i < ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - KETA_0 ) * KETA_4 + keta_moji_ARRAY_SIZE); i++) {
+	for (int i = 0; i <= ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - KETA_0 ) * KETA_4 + keta_moji_ARRAY_SIZE); i++) {
 		for (int j = i; j >= 0; j--) {
 			for (int k = 0; k < (sizeof(kanji_num) / sizeof(kanji_num[0])); k++) {
 
@@ -102,7 +103,7 @@ std::string kanji_num_trade(std::string moji) // 置換
     }
 
     //  アシスト文字を消去する
-    for (int i = 0; i < ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - KETA_0 ) * KETA_4 + keta_moji_ARRAY_SIZE); i++) {
+    for (int i = 0; i < ( (sizeof(keta_4_moji) / sizeof(keta_4_moji[0]) - KETA_0 ) * KETA_4 + keta_moji_ARRAY_SIZE + last_assist); i++) {
         moji = all_Replace(moji,  ("digit_" + std::to_string(i + 1) + "_assist") , "");
     }
 
