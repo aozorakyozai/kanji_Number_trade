@@ -1,5 +1,5 @@
 /**
- * @file main.cpp
+ * @file kanji_trade.cpp
  * @brief   入力<br>
  *          漢数字変換関数の呼び出し<br>
  *          出力<br>
@@ -139,8 +139,8 @@ std::string kanji_num_trade(std::string moji) /// 置換
         moji = all_Replace(moji,  ("digit_" + std::to_string(i + 1) + "_assist") , "");
     }
 
-    moji = irregular(moji); ///例外処理
-    moji = legal_doc(moji); ///法律文書用
+    moji = irregular(moji); /// 例外処理
+    moji = legal_doc(moji); /// 法律文書用
 
 	return moji;
 }
