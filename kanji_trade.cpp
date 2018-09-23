@@ -186,8 +186,6 @@ std::string irregular(std::string std3)
     std3 = all_Replace(std3, "12単衣", "十二単衣");
     std3 = all_Replace(std3, "50嵐", "五十嵐");
     std3 = all_Replace(std3, "40肩", "四十肩");
-    std3 = all_Replace(std3, "1石2鳥", "一石二鳥");
-    std3 = all_Replace(std3, "4苦8苦", "四苦八苦");
 
     ///・・・・・・必要に応じて追加
 
