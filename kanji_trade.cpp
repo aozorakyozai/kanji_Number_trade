@@ -34,8 +34,8 @@ std::string irregular(std::string); /// 例外処理
  * @return 0
  */
 int main() {
-
-	std::string sample =  ///入力
+    ///入力
+	std::string sample =
     "変換範囲は、「一」から「九千九百九十九垓九千九百九十九京九千九百九十九兆九千九百九十九億九千九百九十九万九千九百九十九」です。"
     "本プログラムは計算によらずに置換で行うため、最大値は、データ型の範囲より大きい、無限大数(10の68乗+3)まで変換が可能です。"
     "問題点は、「百垓百一京百十二兆二百億二百一万二百二十二」の中の「百」は六通り（千は八通り）の置換があること。"
@@ -44,10 +44,10 @@ int main() {
     "郵便番号、法律文書については、プログロム内をコメントアウトすることで、ほぼ正確に変換します。";
 	
 	printf("【変換前】 \n%s\n\n", sample.c_str());
-
-	std::string num_moji = kanji_num_trade(sample); /// 置換
-
-	printf("【変換後】 \n%s\n", num_moji.c_str()); ///出力
+    /// 置換
+	std::string num_moji = kanji_num_trade(sample);
+    ///出力
+	printf("【変換後】 \n%s\n", num_moji.c_str());
 
 	return 0;
 }    
@@ -66,7 +66,7 @@ std::string kanji_num_trade(std::string moji) /// 置換
     #define nine_trade 2 /// kanji_num 文字列中の九まで置換
     #define last_assist 1 /// 最後のアシスト文字のナンバーは最大値より１つ大きいから
 
-	std::string keta_4_moji[] = {"","万","億","兆","京","垓"};
+	std::string keta_4_moji[] = {"","万","億","兆","京","垓"};　///ケタの追加・削除はここで行う
 	std::string keta_moji[] = {"十","百","千"};
 	std::string kanji_num[] = {"一","二","三","四","五","六","七","八","九",""};
 
@@ -77,7 +77,6 @@ std::string kanji_num_trade(std::string moji) /// 置換
 	for (int i = 0; i < (sizeof(target_moji) / sizeof(target_moji[0])); i++) {
 		moji = all_Replace(moji, target_moji[i], target_moji[i] + "digit_" + std::to_string(0) + "_assist");
 	}
-
     /// 文字列の左側の「digit_0_assist」を消す
 	for (int i = 0; i < (sizeof(target_moji) / sizeof(target_moji[0])); i++) {
 		moji = all_Replace(moji, "digit_" + std::to_string(0) + "_assist" + target_moji[i], target_moji[i]);
@@ -90,7 +89,7 @@ std::string kanji_num_trade(std::string moji) /// 置換
 				std::string before_trade;
                 //! 置換後の変数
 				std::string after_trade;
-
+                /// 置換内容の決定（4桁ごとの万、億などの場合分け）
 				if ((i % KETA_4) == 0) {
 					before_trade = kanji_num[k] + keta_4_moji[i / KETA_4] + ("digit_" + std::to_string(j) + "_assist");
 					after_trade = ("digit_" + std::to_string(i + 1) + "_assist") + std::to_string((k + 1) % 10) + std::string(i - j, '0');
@@ -98,12 +97,12 @@ std::string kanji_num_trade(std::string moji) /// 置換
 					before_trade = kanji_num[k] + keta_moji[(i % KETA_4) - 1] + ("digit_" + std::to_string(j) + "_assist");
 					after_trade = ("digit_" + std::to_string(i + 1) + "_assist") + std::to_string((int)((k + 1) / 10) + ((k + 1) % 10)) + std::string(i - j, '0');
 				}	
-
+                /// 置換
 				moji = all_Replace(moji, before_trade, after_trade);
 			}
 		}
 	}
-//// 用途別の処理
+/// 用途別の処理
     /// 行政文書、法律文書なら下記２つともコメントアウト
 #if (0) /// 郵便番号用　（単純置換）
     for (int i = 0; i < (sizeof(kanji_num) / sizeof(kanji_num[0])); i++) {
@@ -116,17 +115,15 @@ std::string kanji_num_trade(std::string moji) /// 置換
     for (int i = 0; i < (sizeof(kanji_num) / sizeof(kanji_num[0])); i++) {
         moji = all_Replace(moji, "digit_1_assist" + std::to_string(i + 1), kanji_num[i]);
     }
-
     for (int i = 0; i < (sizeof(keta_moji) / sizeof(keta_moji[0])); i++) {
         moji = all_Replace(moji, ("digit_" + std::to_string(i + 2) + "_assist") + std::to_string(1) + std::string(i + 1, '0'), keta_moji[i]);
     }
-
     for (int i = 0; i < (sizeof(keta_4_moji) / sizeof(keta_4_moji[0])); i++) {
         moji = all_Replace(moji, ("digit_" + std::to_string(i * 4 + 1) + "_assist") + std::string(i * 4 + 1, '0'), keta_4_moji[i]);
     }
 #endif
 
-    /// 50枚など算用数字の方が見やすい場合
+    /// 50枚など、算用数字の方が見やすい場合
     std::string unit_moji[] = {"個","人","枚","回","通"};
     for (int i = 0; i < (sizeof(unit_moji) / sizeof(unit_moji[0])); i++) {
         for (int j = 0; j < (sizeof(kanji_num) / sizeof(kanji_num[0])) - nine_trade; j++) {
