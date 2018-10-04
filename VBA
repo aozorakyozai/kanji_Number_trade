@@ -1,0 +1,91 @@
+Sub kanji_suji() '漢数字 → 算用数字（文字列中の漢数字を置換処理して算用数字に一括変換します）
+
+    '1~(杼 - 1）まで変換する　エクセルでは一京まで動作確認済　２つの漢数字が接着している場合は正常に作動しない
+    keta_4_moji = Array("", "万", "億", "兆", "京", "垓") '４桁ごとの桁　(i Mod 4) = 0     '桁数を増やす場合はここに追加
+    keta_moji = Array("十", "百", "千") '繰り返し使う桁文字　(i Mod 4) <> 0
+    kanji_num = Array("一", "二", "三", "四", "五", "六", "七", "八", "九", "") '""は最後に数字なしを処理するため
+    target_moji = Array("一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "百", "千", "万", "億", "兆", "京", "垓") '1桁目から変換するため漢数字の末尾に桁アシスト文字を入れる
+'    target_moji = Split(Join(keta_4_moji, ",") & "," & Join(keta_moji, ",") & "," & Join(kanji_num, ","), ",")  '1桁目から変換するので漢数字の末尾に桁アシスト文字を入れるため（配列の結合）
+    'digit_(i or j)_assist は桁数を一時的に記憶するためのアシスト文字列
+
+    Dim i, j, k, l, m, n As Integer ' ループ用
+    
+    If ActiveCell.Value Like "*[一,二,三,四,五,六,七,八,九,十,百,千,万,億,兆,京,垓]*" Then  '変換する必要がないものをカットする
+        For i = 0 To UBound(target_moji) '漢字の右側に桁アシスト文字を入れる　Ex．三百四十五 → 三digit_(0)_assist百digit_(0)_assist四digit_(0)_assist十digit_(0)_assist五digit_(0)_assist
+            Selection.Replace What:=target_moji(i), Replacement:=target_moji(i) & "digit_" & (0) & "_assist"
+        Next
+        For i = 0 To UBound(target_moji) '漢字の左側の桁アシスト文字を消す　Ex．[digit_(0)_assist十][digit_(0)_assist五] → [十][五]digit_(0)_assist
+            Selection.Replace What:="digit_" & (0) & "_assist" & target_moji(i), Replacement:=target_moji(i)
+        Next '漢数字の末尾に "digit_0_assist"が入った状態になる　Ex．三十一digit_(0)_assist
+        
+'                MsgBox Application.WorksheetFunction.RoundUp((i Mod 4) / 4, 0) '切り上げ４桁文字と桁文字を結合する必要あり
+        For i = 0 To UBound(keta_4_moji) * 4 + (UBound(keta_moji) + 1) '１桁目から24桁目までする変換（４は４桁ごとに出現するから） Ex．五digit_(0)_assist → digit_(1)_assist5
+            For j = i To 0 Step -1 '桁が飛んでいる場合は"０"を代入する
+                For k = 0 To UBound(kanji_num) '一から九を変換
+                    If i Mod 4 = 0 Then '万、億などの4桁ごとの文字の変換処理
+                        Selection.Replace What:=kanji_num(k) & keta_4_moji(i / 4) & "digit_" & (j) & "_assist", Replacement:="digit_" & (i + 1) & "_assist" & LTrim(Str((k + 1) Mod 10)) & (String((i - j), "0"))
+                    Else '十、百、千の位の処理
+                        Selection.Replace What:=kanji_num(k) & keta_moji((i Mod 4) - 1) & "digit_" & (j) & "_assist", Replacement:="digit_" & (i + 1) & "_assist" & LTrim(Str((Int((k + 1) / 10) + ((k + 1) Mod 10)) & (String((i - j), "0"))))       '
+                    End If
+                Next
+            Next
+        Next
+    End If
+    
+    ' 一般文章用　一文字なら置換しない　（法律文章ならコメントアウトすること ）
+'    For i = 0 To UBound(kanji_num) - 1 ' -1は配列の最後""を外しているから
+'        Selection.Replace What:="digit_" & (1) & "_assist" & (i + 1), Replacement:=kanji_num(i) '一から九が一文字なら変換しない
+'    Next
+'
+'    For i = 0 To UBound(keta_moji)
+'        Selection.Replace What:="digit_" & (i + 2) & "_assist" & (10 ^ (i + 1)), Replacement:=keta_moji(i)  '十、百、千が一文字なら置換しない
+'    Next
+'
+'    For i = 1 To UBound(keta_4_moji)
+'        Selection.Replace What:="digit_" & (i * 4 + 1) & "_assist" & String(i * 4 + 1, "0"), Replacement:=keta_4_moji(i) '万、億、兆、京、垓 一文字は変換しない
+'    Next
+'
+'    unit_moji = Array("個", "人", "枚", "回") '算用数字のほうが読みやすい一文字を算用数字にする　用途に合わせて追加してください（以下は法律文章用）
+'    For i = 0 To UBound(unit_moji)
+'        For j = 0 To UBound(kanji_num) - 1
+'            Selection.Replace What:=kanji_num(j) & unit_moji(i), Replacement:=(j + 1) & unit_moji(i)
+'        Next
+'    Next
+    '（ここまで法文用　コメントアウト）
+    
+'    '番号、番地など
+'    For i = 0 To UBound(kanji_num) - 1
+'        Selection.Replace What:=kanji_num(i), Replacement:=(i + 1) '一から九まで置換
+'    Next
+'    Selection.Replace What:="〇", Replacement:=(0) 'ゼロの置換
+
+    For i = 0 To UBound(keta_4_moji) * 4 + 3 + 1 'アシスト文字を消して変換終了（＋３は (UBound(keta_moji) + 1)のこと９千垓まで置換するから）（＋１は最後のアシスト文字が桁数より一つ多いから）
+        Selection.Replace What:="digit_" & (i) & "_assist", Replacement:=""
+    Next
+
+    '（以下は法律文章用）
+    Selection.Replace What:="1部", Replacement:="一部"
+    Selection.Replace What:="1種", Replacement:="一種"
+    Selection.Replace What:="1人", Replacement:="一人"
+    Selection.Replace What:="2重", Replacement:="二重"
+    Selection.Replace What:="1般", Replacement:="一般"
+    Selection.Replace What:="10分", Replacement:="十分"
+    Selection.Replace What:="1致", Replacement:="一致"
+    Selection.Replace What:="1身", Replacement:="一身"
+    Selection.Replace What:="1定", Replacement:="一定"
+    Selection.Replace What:="1方", Replacement:="一方"
+    Selection.Replace What:="1時", Replacement:="一時"
+    Selection.Replace What:="1切", Replacement:="一切"
+    Selection.Replace What:="第3者", Replacement:="第三者"
+    Selection.Replace What:="第3取得者", Replacement:="第三取得者"
+    Selection.Replace What:="1の地方", Replacement:="一の地方"
+    Selection.Replace What:="同1", Replacement:="同一"
+    
+    
+    '漢数字でなければならない文字列を漢数字に戻す　法文、技術系文書などの用途に合わせて追加してください
+    Selection.Replace What:="10中八9", Replacement:="十中八九"
+    Selection.Replace What:="12単衣", Replacement:="十二単衣"
+    Selection.Replace What:="50嵐", Replacement:="五十嵐"
+    Selection.Replace What:="40肩", Replacement:="四十肩"
+    '・・・
+End Sub
