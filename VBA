@@ -89,3 +89,68 @@ Sub kanji_suji() 'エクセルVBA 漢数字 → 算用数字（文字列中の�
     Selection.Replace What:="40肩", Replacement:="四十肩"
     '・・・
 End Sub
+
+Sub 検索_条文() '文章中の条文を検索し表示する
+    Dim str As String
+    Dim i, j, k As Long
+    Dim mt As Object 'MatchCollection
+    Dim r, c, rcnt, msgcnt, jyoubun_adress, hyouji_MAX, search_MAX As Integer
+    Dim jken, msgvl As Variant
+    
+    On Error Resume Next 'エラー回避
+
+    r = ActiveCell.Row
+    c = ActiveCell.Column
+    jyoubun_adress = 3 '条文を添付してある列を表示
+    hyouji_MAX = 500 '表示できる文字数
+    search_MAX = 1000  '何行目まで検索するか
+    
+    str = Cells(r, c).Value '
+    With CreateObject("VBScript.RegExp")
+        .Pattern = "(￥d+)(条の(￥d+)|条)"   '正規表現　「・条」と「・条の・」のお二つの型を検索する。「￥」半角にすること。Macでは使用できない
+        .Global = True
+        .IgnoreCase = True
+        .test True
+        Set mt = .Execute(str)
+            If mt.Count > 0 Then
+                For i = 1 To mt.Count
+                    jken = mt.Item(i - 1)
+                        rcnt = 0
+                        Do '条文の先頭のセルを探す
+                            rcnt = rcnt + 1
+                            If Cells(rcnt, jyoubun_adress).Value Like "第" & jken & "*" Then
+                                If Left(Cells(rcnt - 1, jyoubun_adress).Value, 1) = "（" Then
+                                    j = -1 'スタートを合わせるため
+                                Else
+                                    j = 0
+                                End If
+                                Do '条文を結合して表示する
+                                    If j > 0 Then '表示して終了
+                                        If Left(Cells(rcnt + j, jyoubun_adress).Value, 1) = "（" Or Left(Cells(rcnt + j, jyoubun_adress).Value, 1) = "第" Or Cells(rcnt + j, jyoubun_adress).Value = "" Then
+                                            msgcnt = Int(Len(msgvl) / hyouji_MAX) + 1
+                                            For k = 1 To msgcnt
+                                                MsgBox Mid(msgvl, 1 + (hyouji_MAX * (k - 1)), hyouji_MAX)
+                                            Next
+                                            msgvl = ""
+                                            GoTo pass
+                                        End If
+                                        If j > 100 Then Exit Sub
+                                    End If
+                                    msgvl = msgvl & Cells(rcnt + j, jyoubun_adress).Value & vbCrLf
+                                    j = j + 1
+                                Loop
+                            End If
+                            If rcnt = search_MAX0 Then  '
+                                Exit Do
+                            End If
+                        Loop
+pass:
+                    If i = mt.Count Then '検索回数終了
+                        Exit For
+                    End If
+                Next
+                Else
+                    MsgBox "nothing"
+            End If
+    End With
+End Sub
