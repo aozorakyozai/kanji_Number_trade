@@ -103,19 +103,21 @@ Sub 検索_条文() '文章中の条文を検索し表示する
     c = ActiveCell.Column
     jyoubun_adress = 3 '条文を添付してある列を表示
     hyouji_MAX = 500 '表示できる文字数
-    search_MAX = 1000  '何行目まで検索するか
+    search_MAX = 2000  '何行目まで検索するか
     
-    str = Cells(r, c).Value '
+    str = StrConv(Cells(r, c).Value, vbNarrow)  '検索対象のセル
+    
     With CreateObject("VBScript.RegExp")
-        .Pattern = "(￥d+)(条の(￥d+)|条)"   '正規表現　「・条」と「・条の・」のお二つの型を検索する。「￥」半角にすること。Macでは使用できない
+        .Pattern = "(\d+)(条の(\d+)|条)"    '正規表現　「・条」と「・条の・」の二つの型を検索するる
+                                            ' Macからの変更点(半角円記号d+)(条の(半角円記号d+)|条)""
         .Global = True
-        .IgnoreCase = True
-        .test True
+'        .IgnoreCase = True
+'        .test True
         Set mt = .Execute(str)
             If mt.Count > 0 Then
                 For i = 1 To mt.Count
                     jken = mt.Item(i - 1)
-                        rcnt = 0
+                        rcnt = 0  'シートの先頭から検索する
                         Do '条文の先頭のセルを探す
                             rcnt = rcnt + 1
                             If Cells(rcnt, jyoubun_adress).Value Like "第" & jken & "*" Then
@@ -149,8 +151,8 @@ pass:
                         Exit For
                     End If
                 Next
-                Else
-                    MsgBox "nothing"
+            Else
+                MsgBox mt.Count & " 検索対象が見つかりません"
             End If
     End With
 End Sub
